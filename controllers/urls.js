@@ -31,6 +31,42 @@ async function handleCreateShortURL(req, res) {
   }
 }
 
+async function handleAnalytics(req, res) {
+  const shortUrl = req.params.shortUrl;
+  if (!shortUrl) {
+    const result = await URL.find();
+    for (documents of result) {
+      const numOfUrlHits = documents.visitHistory.length;
+      documents.numOfUrlHits = numOfUrlHits;
+    }
+    return res.status(200).json({
+      status: "success",
+      urls: result,
+    });
+  }
+  try {
+    const result = await URL.findOne({ shortUrl: shortUrl });
+    if (!result) {
+      return res.status(400).json({
+        status: "failed",
+        msg: "invalid url",
+      });
+    }
+    const numOfUrlHits = result.visitHistory.length;
+    result.numOfUrlHits = numOfUrlHits;
+    return res.status(200).json({
+      status: "success",
+      urlInfo: result,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "failed",
+      msg: "something went wrong",
+    });
+  }
+}
+
 module.exports = {
   handleCreateShortURL,
+  handleAnalytics,
 };
