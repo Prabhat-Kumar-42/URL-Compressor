@@ -1,0 +1,22 @@
+{
+  "name": "url-compresser",
+  "version": "1.0.0",
+  "description": "URL compression app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Prabhat-Kumar-42/URL-Compressor.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "license": "ISC",
+  "author": "Prabhat-Kumar-42",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mkdirp": "^3.0.1",
+    "mongoose": "^8.4.3",
+    "nodemon": "^3.1.3",
+    "shortid": "^2.2.16"
+  }
+}
