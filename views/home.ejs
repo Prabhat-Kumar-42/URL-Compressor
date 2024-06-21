@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomePage</title>
+    <style>
+        table, th, td {
+            border: solid;
+        };
+    </style>
+</head>
+<body>
+    <div>
+        <% if (locals.id) { %>
+        <p>
+            The Generated Url is: http://localhost:8000/<%= id %>
+        </p>
+        <% } else if (locals.status == "failed") { %>
+            <p><%= msg %></p>
+        <% } %> 
+    </div>
+    <div>     
+        <form action="/" method="post">
+            <label for="url">shortUrl</label>
+            <input type="text" name="url" placeholder="https://www.example.com">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <div>
+        <div>
+            <form action="/analytics/" method="get">
+                <p>Enter short URL, e.g., 'abc', from http://localhost:port/abc</p>
+                <p>Leave the field empty for all URL analytics</p>
+                <label for="shortUrl">Specific ShortUrl Analytics</label>
+                <input type="text" id="shortUrl" name="shortUrl" placeholder="abc">
+                <button type="submit">Submit</button>
+            </form>            
+        </div>
+        <div>
+            <% if (locals.urls) { %>
+                <table>
+                    <thead>
+                        <th>S.No</th>
+                        <th>Short-Url</th>
+                        <th>Redirect-Url</th>
+                        <th>Clicks</th>
+                    </thead>
+                    <tbody>
+                        <% urls.forEach((url, index)=> { %>
+                        <tr>
+                                <td><%= index+1 %></td>
+                                <td>http://localhost:8000/<%= url.shortUrl %></td>
+                                <td><%= url.url %></td>
+                                <td><%= url.visitHistory.length %></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else if (locals.status == "failed") { %>
+                <p><%= msg %></p>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>
