@@ -49,8 +49,7 @@ async function handleUserLogin(req, res) {
       });
     }
 
-    const sessionID = uuidv4();
-    setUser(sessionID, user);
+    const sessionID = setUser(user);
     res.cookie("sessionID", sessionID);
     return res.status(400).render("home", {
       status: true,
