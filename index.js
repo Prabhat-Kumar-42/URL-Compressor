@@ -1,11 +1,19 @@
 const express = require("express");
 const { connectMongoDb } = require("./connection.js");
-const urlRouter = require("./routes/urls.js");
-const staticRouter = require("./routes/staticRoutes.js");
+
+//Model Imports
 const { URL } = require("./models/urls.js");
 
-connectMongoDb("mongodb://127.0.0.1:27017/url-compression");
+// Router Imports
+const urlRouter = require("./routes/urls.js");
+const userRouter = require("./routes/user.js");
+const staticRouter = require("./routes/staticRoutes.js");
 
+//MiddleWare Imports
+const cookieParser = require("cookie-parser");
+const { AuthenticatedLoginOnly, checkAuth } = require("./middlewares/auth.js");
+
+connectMongoDb("mongodb://127.0.0.1:27017/url-compression");
 const app = express();
 const PORT = 8000;
 
@@ -16,10 +24,12 @@ app.set("views", "./views/");
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 //Routes
-app.use("/", staticRouter);
-app.use("/api/url", urlRouter);
+app.use("/", checkAuth, staticRouter);
+app.use("/user", userRouter);
+app.use("/api/url", AuthenticatedLoginOnly, urlRouter);
 app.route("/:shortUrl").get(async (req, res) => {
   const url = req.params.shortUrl;
   if (!url) {
