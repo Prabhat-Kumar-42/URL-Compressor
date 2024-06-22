@@ -3,19 +3,28 @@ const shortid = require("shortid");
 const express = require("express");
 
 async function handleCreateShortURLStatic(req, res) {
+  const user = req.user;
+  if (!user) {
+    return res.status(401).render("login", {
+      status: false,
+      msg: "login required",
+    });
+  }
   const url = req.body.url;
   if (!url) {
     return res.status(400).render("home", {
-      status: "failed",
+      status: false,
       msg: "url is required",
     });
   }
   try {
     const shortUrl = shortid();
+    const userID = user._id;
     const result = await URL.create({
       url: url,
       shortUrl: shortUrl,
       visitHistory: [],
+      createdBy: userID,
     });
     console.log("Created Successfully");
     console.log(result);
@@ -24,16 +33,24 @@ async function handleCreateShortURLStatic(req, res) {
     });
   } catch (err) {
     return res.status(500).render("home", {
-      status: "false",
+      status: false,
       msg: "something went wrong",
     });
   }
 }
 
 async function handleAnalyticsStatic(req, res) {
+  const user = req.user;
+  if (!user) {
+    return res.status(401).render("login", {
+      status: false,
+      msg: "login required",
+    });
+  }
   const shortUrl = req.query.shortUrl;
+  const userID = user._id;
   if (!shortUrl) {
-    const result = await URL.find();
+    const result = await URL.find({ createdBy: userID });
     for (documents of result) {
       const numOfUrlHits = documents.visitHistory.length;
       documents.numOfUrlHits = numOfUrlHits;
@@ -43,10 +60,10 @@ async function handleAnalyticsStatic(req, res) {
     });
   }
   try {
-    const result = await URL.findOne({ shortUrl: shortUrl });
+    const result = await URL.findOne({ shortUrl: shortUrl, createdBy: userID });
     if (!result) {
       return res.status(400).render("home", {
-        status: "failed",
+        status: false,
         msg: "invalid url",
       });
     }
@@ -58,7 +75,7 @@ async function handleAnalyticsStatic(req, res) {
     });
   } catch (err) {
     return res.status(500).render("home", {
-      status: "failed",
+      status: false,
       msg: "something went wrong",
     });
   }
