@@ -16,7 +16,7 @@
         <p>
             The Generated Url is: http://localhost:8000/<%= id %>
         </p>
-        <% } else if (locals.status == "failed") { %>
+        <% } else if (locals.status == false) { %>
             <p><%= msg %></p>
         <% } %> 
     </div>
@@ -57,7 +57,7 @@
                         <% }) %>
                     </tbody>
                 </table>
-            <% } else if (locals.status == "failed") { %>
+            <% } else if (locals.status == false) { %>
                 <p><%= msg %></p>
             <% } %>
         </div>
