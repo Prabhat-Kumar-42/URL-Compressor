@@ -16,6 +16,7 @@ async function handleCreateShortURL(req, res) {
       url: url,
       shortUrl: shortUrl,
       visitHistory: [],
+      createdBy: req.user._id,
     });
     console.log("Created Successfully");
     console.log(result);
